@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import shlex
 import tomllib
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -13,7 +14,7 @@ from ..core.providers.base import ModelConfig
 
 TIERS = ("T0", "T1", "T2", "T3")
 ENGINES = ("plain", "langgraph")
-PROVIDERS = ("fake", "anthropic", "openai_compat")
+PROVIDERS = ("fake", "anthropic", "openai_compat", "command")
 ROLES = ("drafter", "verifier")
 
 
@@ -116,14 +117,16 @@ def resolve_models(manifest: Manifest, env: Mapping[str, str] | None = None) -> 
     any call, instead of silently using whatever a library happens to default to.
     """
     env = os.environ if env is None else env
+    keys = ("provider", "model", "price_in_per_mtok", "price_out_per_mtok", "base_url",
+            "api_key_env", "max_output_tokens", "command", "output", "call_timeout_s")
     out: dict[str, ModelConfig] = {}
     for role in ROLES:
         spec = dict(manifest.models[role])
         if spec["provider"] == "env":
             prefix = f"GA_{role.upper()}_"
-            spec = {key: env[prefix + key.upper()] for key in
-                    ("provider", "model", "price_in_per_mtok", "price_out_per_mtok", "base_url",
-                     "api_key_env") if prefix + key.upper() in env}
+            spec = {key: env[prefix + key.upper()] for key in keys if prefix + key.upper() in env}
+            if "command" in spec:
+                spec["command"] = shlex.split(spec["command"])
         missing = [k for k in ("provider", "model", "price_in_per_mtok", "price_out_per_mtok")
                    if k not in spec]
         if missing:
@@ -131,11 +134,15 @@ def resolve_models(manifest: Manifest, env: Mapping[str, str] | None = None) -> 
                                 f"(set them in the manifest or as GA_{role.upper()}_* variables)")
         if spec["provider"] not in PROVIDERS:
             raise ManifestError(f"models.{role}.provider: unknown {spec['provider']!r}")
+        if spec["provider"] == "command" and not spec.get("command"):
+            raise ManifestError(f"models.{role}: the command provider needs 'command'")
         try:
-            out[role] = ModelConfig(spec["provider"], str(spec["model"]),
-                                    float(spec["price_in_per_mtok"]),
-                                    float(spec["price_out_per_mtok"]),
-                                    spec.get("base_url"), spec.get("api_key_env"))
+            out[role] = ModelConfig(
+                spec["provider"], str(spec["model"]), float(spec["price_in_per_mtok"]),
+                float(spec["price_out_per_mtok"]), spec.get("base_url"), spec.get("api_key_env"),
+                int(spec.get("max_output_tokens", 16000)),
+                tuple(spec["command"]) if spec.get("command") else None,
+                str(spec.get("output", "stdout")), int(spec.get("call_timeout_s", 300)))
         except ValueError:
-            raise ManifestError(f"models.{role}: prices must be numbers") from None
+            raise ManifestError(f"models.{role}: prices, token and timeout limits must be numbers") from None
     return out

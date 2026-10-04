@@ -15,6 +15,9 @@ def build_provider(config: ModelConfig, fake: Provider | None = None) -> Provide
     if config.provider == "anthropic":
         from .anthropic import AnthropicProvider
         return AnthropicProvider(config)
+    if config.provider == "command":
+        from .command import CommandProvider
+        return CommandProvider(config)
     if config.provider == "openai_compat":
         from .openai_compat import OpenAICompatProvider
         return OpenAICompatProvider(config)

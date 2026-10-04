@@ -95,3 +95,21 @@ def test_writer_rejects_undeclared_paths(tmp_path, rel):
 def test_t0_cannot_write(tmp_path):
     with pytest.raises(TierViolation, match="T0"):
         Writer(tmp_path, ["out"], "T0", apply=True).write_jsonl("out/x.jsonl", [])
+
+
+def test_command_provider_from_env(tmp_path):
+    m = load_manifest(manifest_file(tmp_path))
+    env = {"GA_DRAFTER_PROVIDER": "command", "GA_DRAFTER_MODEL": "m",
+           "GA_DRAFTER_PRICE_IN_PER_MTOK": "0", "GA_DRAFTER_PRICE_OUT_PER_MTOK": "0",
+           "GA_DRAFTER_COMMAND": "some-cli exec --model {model} -o '{output_file}'",
+           "GA_DRAFTER_CALL_TIMEOUT_S": "120", "GA_DRAFTER_MAX_OUTPUT_TOKENS": "8000"}
+    drafter = resolve_models(m, env)["drafter"]
+    assert drafter.command == ("some-cli", "exec", "--model", "{model}", "-o", "{output_file}")
+    assert (drafter.call_timeout_s, drafter.max_output_tokens, drafter.output) == (120, 8000, "stdout")
+
+
+def test_command_provider_needs_a_command(tmp_path):
+    env = {"GA_DRAFTER_PROVIDER": "command", "GA_DRAFTER_MODEL": "m",
+           "GA_DRAFTER_PRICE_IN_PER_MTOK": "0", "GA_DRAFTER_PRICE_OUT_PER_MTOK": "0"}
+    with pytest.raises(ManifestError, match="needs 'command'"):
+        resolve_models(load_manifest(manifest_file(tmp_path)), env)

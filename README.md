@@ -100,6 +100,7 @@ objection (q07), escalated to a human (q04, q05) and filtered out (q06).
 | Output validation | hand-written parsers, errors as JSON paths | Pydantic models, errors reported as JSON paths; a test checks both parsers accept and reject the same fixtures |
 | Conformance scenarios (`tests/scenarios.py`) | 7 / 7 | 7 / 7 |
 | Sealed eval set, fake provider | 24 / 24 green | 24 / 24 green |
+| Sealed eval set, real models (one run) | 22 / 24, red — see below | not run (same transitions as plain) |
 | Routing | a `while` loop | an explicit `StateGraph` with conditional edges |
 
 Both engines call the same step functions in `core/steps.py`; an engine only decides the order.
@@ -139,11 +140,66 @@ grounded run workers/answer-plain.toml                # dry run
 grounded run workers/answer-plain.toml --apply        # writes, if the seal is green
 ```
 
+**Through a command-line client instead of an API key.** Some access only exists through a
+vendor's CLI (a subscription, for instance). The `command` provider runs any program, sends the
+user prompt on stdin and reads the answer from stdout or from a file; `{model}`, `{system}` and
+`{output_file}` are filled in per call:
+
+```bash
+export GA_DRAFTER_PROVIDER=command
+export GA_DRAFTER_MODEL=<model id>
+export GA_DRAFTER_PRICE_IN_PER_MTOK=0 GA_DRAFTER_PRICE_OUT_PER_MTOK=0
+export GA_DRAFTER_COMMAND="<cli> exec --model {model} --output-file {output_file}"
+export GA_VERIFIER_OUTPUT=result-json    # if the CLI prints {"result": ..., "usage": {...}}
+```
+
+A CLI that reports no token counts is recorded at zero cost, so the spend caps cannot see it;
+the provider's own quota is the limit. Agentic CLIs also wrap the prompt in their own system
+instructions, so results through them are not identical to a bare API call.
+
 Suggested tiers, not names: a fast, inexpensive model for drafting; the strongest model you can
 afford for verification; ideally from **different model families**, so the verifier does not
 share the drafter's blind spots. Prices are configuration because they change; there are no
 defaults, so an unset model fails before any call instead of falling back to whatever a library
 happens to choose.
+
+## Results with real models
+
+One run of the frozen set (v2, 24 cases) on 2026-10-04, plain engine, drafter `gpt-6-luna`
+through the Codex CLI and verifier `claude-opus-5-5` through the Claude Code CLI — two model
+families, both reached through subscriptions with the `command` provider. These are what was
+run, not requirements: any models work. 49 model calls, 8 minutes. Cost is not reported: the
+CLIs bill against subscription quota, so the ledger records zero.
+
+| | |
+|---|---|
+| Outcome matches the expected label | 22 / 24 (91.7%) — **red** against the 0.95 threshold, sealed as red |
+| Ungrounded claims shipped | 0 |
+| Forbidden strings shipped | 0 |
+| Drafts that failed the verbatim check | 0 of 27 |
+| Fixed by the single retry | 3 (e08, e09, e20) |
+| Escalated to a human although the label says `approved` | 2 (e04, e12) |
+
+What the run showed:
+
+- **The verbatim rule was not too strict for this drafter.** Every quote matched its source on
+  the first try; the grounding check never fired. A weaker or chattier model may differ.
+- **Showing the verifier every section paid off.** In e09 ("Can we choose where our data is
+  hosted?") the first draft said "EU or US, chosen at creation" — accurate and cited. The
+  verifier objected that backups live in a second region and that the optional assistant sends
+  data to a third-party provider, both from sections the draft never cited. The retry said so.
+  For a data-residency question that omission is the kind that ends up in a contract.
+- **Both misses are the safe kind.** In e04 (audit-log retention) and e12 (customer data in
+  test environments) the verifier raised a real ambiguity between two sections — does the
+  30-day deletion after termination cut the 400-day audit-log retention short? are quarterly
+  restore tests a "test environment"? — and the redrafter answered `insufficient_evidence`.
+  The labels say a human should not have been needed; a reviewer could reasonably side with
+  the verifier on e12. Nothing wrong was shipped; two answers cost a human a minute.
+- **Not tuned to pass.** Loosening the verifier prompt until these two cases approve would turn
+  the set into training data. The seal stays red; a future prompt change gets judged on this
+  same set, and the README will report that run as it comes out.
+
+One run of 24 cases is an order of magnitude, not a statistic.
 
 ## Runtime
 
@@ -217,7 +273,7 @@ runs with those same models.
 ```
 src/grounded_agents/
   core/        controls shared by both engines: corpus, grounding, schemas, states, filters,
-               budget, providers (fake, anthropic, openai_compat), prompts, steps
+               budget, providers (fake, anthropic, openai_compat, command), prompts, steps
   engines/     plain/ (a loop) and langgraph/ (a StateGraph + Pydantic models)
   runtime/     manifest, writer (tiers), runner, ledger, alerts, context
   evals/       seal (freeze, hash, verify) and gate (metrics, sample)

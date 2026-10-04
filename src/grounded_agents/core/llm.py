@@ -24,8 +24,8 @@ class LLM:
         self.budget.check_before_call()
         model = self.models[role]
         completion = self.providers[role].complete(CompletionRequest(
-            role=role, model=model.model, system=system, user=user, item_id=item_id,
-            attempt=attempt))
+            role=role, model=model.model, system=system, user=user,
+            max_output_tokens=model.max_output_tokens, item_id=item_id, attempt=attempt))
         self.calls_by_role[role] = self.calls_by_role.get(role, 0) + 1
         self.budget.record(cost_of(model, completion))
         return completion

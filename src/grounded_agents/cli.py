@@ -10,7 +10,7 @@ from pathlib import Path
 
 from .core.budget import Budget
 from .core.errors import GroundedError
-from .core.states import State
+from .core.schemas import to_jsonable
 from .evals import gate, seal
 from .runtime import ledger
 from .runtime.alerts import StdoutNotifier, WebhookNotifier
@@ -114,6 +114,16 @@ def cmd_evals(args) -> int:
                     print(f'  - [{c.source}] "{c.quote}"')
             print()
         return 0
+    if args.report:
+        expected = {c.id: c.expected for c in cases}
+        with open(args.report, "w", encoding="utf-8") as fh:
+            for item in report.items:
+                fh.write(json.dumps({
+                    "id": item.id, "question": item.question, "expected": expected[item.id],
+                    "state": item.state.value, "attempts": item.attempts, "reason": item.reason,
+                    "drafts": [to_jsonable(d) for d in item.drafts],
+                    "objections": [[to_jsonable(o) for o in a] for a in item.objections],
+                }, ensure_ascii=False) + "\n")
     print(f"engine={args.engine} provider={provider_kind(models)} "
           f"metrics={json.dumps(report.metrics())}")
     for failure in report.failures:
@@ -161,6 +171,7 @@ def build_parser() -> argparse.ArgumentParser:
         p.add_argument("--script", type=Path, help="fake provider script")
         p.add_argument("--manifest", type=Path, default=Path("workers/answer-plain.toml"),
                        help="manifest whose [models] to use with --provider real")
+        p.add_argument("--report", type=Path, help="write per-case details as JSONL")
         if name == "sample":
             p.add_argument("n", type=int)
             p.add_argument("--seed", type=int, default=0)

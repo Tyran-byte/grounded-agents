@@ -123,6 +123,9 @@ class Provider(Protocol):
 - `anthropic` — optional extra (`grounded-agents[anthropic]`), uses the official SDK.
 - `openai_compat` — standard-library HTTP client for any OpenAI-compatible chat-completions
   endpoint (hosted or local servers); no extra dependency.
+- `command` — any command-line client (argv with `{model}`, `{system}`, `{output_file}`; prompt on
+  stdin). Lets a run go through a CLI that bills against a subscription instead of an API key;
+  without token counts such calls are recorded at zero cost.
 - Model ids and prices (USD per million input/output tokens) come from the manifest or the
   environment; there are no defaults in code. The README suggests *tiers*, not names: a fast,
   inexpensive model for drafting; the strongest model you can afford for verification;
