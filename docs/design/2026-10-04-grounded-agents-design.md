@@ -172,14 +172,14 @@ provider = "env"
 
 - One JSON line per run appended to `ledger/runs.jsonl`: `worker, engine, tier, trace_id,
   mode (dry|apply), started_at, duration_s, exit_code, cost_usd, calls, items` (counts per
-  final state) and `error` (last error class and message, if any).
+  final state), `approved_by` (T3 runs) and `error` (last error class and message, if any).
 - `trace_id = <worker>-<UTC YYYYmmddTHHMMSS>-<4 hex>`; it is also stamped on every output
   file and review-queue entry.
 - Alerts fire **only on state change** per worker (`ok` ↔ `failing`), stored in
   `ledger/alert-state.json`; the first-ever `ok` is silent, a repeated failure is silent.
   Notifier is a protocol: `stdout` (default) and `webhook` (generic JSON POST, stdlib).
-- Exit codes: `0` ok · `1` content failure or red gate · `2` could not run (infra, budget,
-  missing seal).
+- Exit codes: `0` ok (items routed to `needs_human` are a normal outcome) · `1` red eval
+  gate · `2` could not run (infra, budget, missing or stale seal, invalid manifest).
 
 ## 8. Sealed evals
 
