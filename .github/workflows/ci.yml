@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    # GitHub-hosted on purpose: a public repo must not run fork pull requests on a self-hosted box.
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.13"]
+        extras: ["core", "langgraph"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install from the lockfile
+        run: |
+          if [ "${{ matrix.extras }}" = "langgraph" ]; then
+            uv sync --locked --extra dev --extra langgraph
+          else
+            uv sync --locked --extra dev
+          fi
+
+      - name: Tests (no network, no API key)
+        run: uv run pytest -q
+
+      - name: Offline example, end to end
+        run: |
+          . .venv/bin/activate
+          examples/run_offline.sh
+
+      - name: Committed seals match the code
+        if: matrix.extras == 'langgraph'
+        run: |
+          . .venv/bin/activate
+          grounded evals verify --engine plain
+          grounded evals verify --engine langgraph
