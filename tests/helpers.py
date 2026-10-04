@@ -1,5 +1,6 @@
 """Shared builders for scripted runs."""
 
+import dataclasses
 from pathlib import Path
 
 from grounded_agents.core.budget import Budget
@@ -32,7 +33,8 @@ FAIL = {"verdict": "fail", "objections": [{
 
 def make_ctx(script, budget=None):
     fake = FakeProvider(script)
-    budget = budget or Budget(per_call_usd=1, per_run_usd=10, per_day_usd=10)
+    # copy: scenario budgets are module-level and a run mutates its budget
+    budget = dataclasses.replace(budget) if budget else Budget(1, 10, 10)
     llm = LLM({"drafter": fake, "verifier": fake},
               {"drafter": FAKE_MODEL, "verifier": FAKE_MODEL}, budget)
     return Context(CORPUS, llm, PROMPTS), fake
