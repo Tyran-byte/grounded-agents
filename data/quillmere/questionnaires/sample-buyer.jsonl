@@ -1,0 +1,8 @@
+{"id": "q01", "question": "Do you encrypt customer data at rest? If so, with which algorithm?"}
+{"id": "q02", "question": "Is our data used to train AI or machine learning models?"}
+{"id": "q03", "question": "How often are backups taken, and where are they stored?"}
+{"id": "q04", "question": "What recovery time do you guarantee for the analytics service?"}
+{"id": "q05", "question": "Do you operate a 24/7 security operations center?"}
+{"id": "q06", "question": "What discount do you offer on a three-year commitment?"}
+{"id": "q07", "question": "Can we enforce single sign-on (SAML) for our users?"}
+{"id": "q08", "question": "Can Quillmere support staff read our datasets?"}

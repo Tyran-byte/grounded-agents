@@ -1,0 +1,265 @@
+{
+ "items": {
+  "q01": {
+   "drafter": [
+    {
+     "status": "answered",
+     "answer": "Yes. All customer data at rest is encrypted with AES-256, and this cannot be turned off.",
+     "claims": [
+      {
+       "text": "Customer data at rest is encrypted with AES-256.",
+       "citations": [
+        {
+         "source": "encryption#at-rest",
+         "quote": "All customer data at rest is encrypted with AES-256."
+        }
+       ]
+      },
+      {
+       "text": "Encryption at rest cannot be disabled.",
+       "citations": [
+        {
+         "source": "encryption#at-rest",
+         "quote": "cannot be turned off by customers or by Quillmere staff"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "verifier": [
+    {
+     "verdict": "pass",
+     "objections": []
+    }
+   ]
+  },
+  "q02": {
+   "drafter": [
+    {
+     "status": "answered",
+     "answer": "No. Customer data is not used to train or fine-tune machine learning models, including third-party models.",
+     "claims": [
+      {
+       "text": "Customer data is not used to train or fine-tune ML models, Quillmere's or third parties'.",
+       "citations": [
+        {
+         "source": "ai-data-usage#training",
+         "quote": "Customer data is not used to train or fine-tune machine learning models, whether those models are built by Quillmere or by a third party."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "verifier": [
+    {
+     "verdict": "pass",
+     "objections": []
+    }
+   ]
+  },
+  "q03": {
+   "drafter": [
+    {
+     "status": "answered",
+     "answer": "Backups run every 6 hours and are stored in a different country.",
+     "claims": [
+      {
+       "text": "Backups run every 6 hours.",
+       "citations": [
+        {
+         "source": "backup-recovery#backups",
+         "quote": "Production databases are backed up every 6 hours."
+        }
+       ]
+      },
+      {
+       "text": "Backups are stored in a different country.",
+       "citations": [
+        {
+         "source": "backup-recovery#backups",
+         "quote": "stored in a different country"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "status": "answered",
+     "answer": "Production databases are backed up every 6 hours. Backups are encrypted and stored in a second region, separate from the primary hosting region.",
+     "claims": [
+      {
+       "text": "Backups run every 6 hours.",
+       "citations": [
+        {
+         "source": "backup-recovery#backups",
+         "quote": "Production databases are backed up every 6 hours."
+        }
+       ]
+      },
+      {
+       "text": "Backups are encrypted and kept in a separate second region.",
+       "citations": [
+        {
+         "source": "backup-recovery#backups",
+         "quote": "Backups are encrypted and stored in a second region, separate from the primary hosting region."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "verifier": [
+    null,
+    {
+     "verdict": "pass",
+     "objections": []
+    }
+   ]
+  },
+  "q04": {
+   "drafter": [
+    {
+     "status": "answered",
+     "answer": "We guarantee a recovery time of 12 hours.",
+     "claims": [
+      {
+       "text": "The RTO for the analytics service is 12 hours.",
+       "citations": [
+        {
+         "source": "backup-recovery#objectives",
+         "quote": "the recovery time objective (RTO) is 12 hours for the analytics service"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "status": "answered",
+     "answer": "We guarantee a recovery time of 12 hours.",
+     "claims": [
+      {
+       "text": "The RTO for the analytics service is 12 hours.",
+       "citations": [
+        {
+         "source": "backup-recovery#objectives",
+         "quote": "the recovery time objective (RTO) is 12 hours for the analytics service"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "verifier": [
+    {
+     "verdict": "fail",
+     "objections": [
+      {
+       "claim": -1,
+       "rule": "drops-condition",
+       "source_quote": "These objectives are internal targets, not contractual commitments.",
+       "explanation": "The source calls the RTO an internal target; the answer presents it as a guarantee."
+      }
+     ]
+    },
+    {
+     "verdict": "fail",
+     "objections": [
+      {
+       "claim": -1,
+       "rule": "drops-condition",
+       "source_quote": "These objectives are internal targets, not contractual commitments.",
+       "explanation": "The source calls the RTO an internal target; the answer presents it as a guarantee."
+      }
+     ]
+    }
+   ]
+  },
+  "q05": {
+   "drafter": [
+    {
+     "status": "insufficient_evidence",
+     "answer": "The control documents do not state that a 24/7 security operations center exists.",
+     "claims": []
+    }
+   ]
+  },
+  "q07": {
+   "drafter": [
+    {
+     "status": "answered",
+     "answer": "Yes, single sign-on through SAML 2.0 can be enforced on all plans.",
+     "claims": [
+      {
+       "text": "Customers can enforce SAML 2.0 single sign-on.",
+       "citations": [
+        {
+         "source": "access-control#sso-mfa",
+         "quote": "Customers can enforce single sign-on through SAML 2.0"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "status": "answered",
+     "answer": "Yes, on the Business and Enterprise plans customers can enforce single sign-on through SAML 2.0.",
+     "claims": [
+      {
+       "text": "SAML 2.0 SSO can be enforced on the Business and Enterprise plans.",
+       "citations": [
+        {
+         "source": "access-control#sso-mfa",
+         "quote": "Customers can enforce single sign-on through SAML 2.0 on the Business and Enterprise plans."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "verifier": [
+    {
+     "verdict": "fail",
+     "objections": [
+      {
+       "claim": 0,
+       "rule": "drops-condition",
+       "source_quote": "Customers can enforce single sign-on through SAML 2.0 on the Business and Enterprise plans.",
+       "explanation": "SSO enforcement is limited to two plans; the answer says all plans."
+      }
+     ]
+    },
+    {
+     "verdict": "pass",
+     "objections": []
+    }
+   ]
+  },
+  "q08": {
+   "drafter": [
+    {
+     "status": "answered",
+     "answer": "Not by default. Support staff cannot read customer datasets unless the customer grants a time-limited support session from its admin console.",
+     "claims": [
+      {
+       "text": "Support staff need a customer-granted, time-limited session to read datasets.",
+       "citations": [
+        {
+         "source": "access-control#least-privilege",
+         "quote": "Quillmere support staff cannot read customer datasets unless the customer grants a time-limited support session from its admin console."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "verifier": [
+    {
+     "verdict": "pass",
+     "objections": []
+    }
+   ]
+  }
+ }
+}

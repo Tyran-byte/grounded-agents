@@ -1,0 +1,8 @@
+# Blind eval set: written before tuning prompts, frozen in SET.lock, never edited to pass.
+version = 1
+description = "Security questionnaire answers grounded in Quillmere control documents"
+accuracy_min = 0.95          # share of cases whose final outcome matches "expected"
+
+[budget]                     # caps for one eval run
+per_call_usd = 0.10
+per_run_usd = 3.00

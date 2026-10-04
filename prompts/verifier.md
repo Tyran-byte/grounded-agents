@@ -10,6 +10,9 @@ Object when a claim:
 - answers a different question from the one asked;
 - relies on a quote that is taken out of context so that its meaning changes.
 
+Also object, with claim -1, to any statement in "answer" that none of the claims supports: the
+answer is what the customer reads, so it may not say more than the claims.
+
 Do not object to style or wording when the meaning is supported. For every objection, copy the
 exact sentence from the source that shows the problem into "source_quote". Use claim -1 for an
 objection about the answer as a whole.

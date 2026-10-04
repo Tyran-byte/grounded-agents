@@ -19,6 +19,9 @@ MIN_QUOTE_CHARS = 12  # shorter quotes ("AES-256", "yes") match almost anything
 _TYPOGRAPHY = str.maketrans({"“": '"', "”": '"', "‘": "'", "’": "'", "–": "-", "—": "-",
                              " ": " "})
 _SPACES = re.compile(r"\s+")
+# Figures are where answers go wrong most expensively ("24/7", "99.9%", "within 4 hours"), and
+# they are cheap to check exactly: any figure the draft states must appear in a cited quote.
+_NUMBER = re.compile(r"\d+(?:[.,/:]\d+)*")
 
 
 def normalize(text: str) -> str:
@@ -38,10 +41,28 @@ def check_quote(corpus: Corpus, source: str, quote: str) -> str | None:
     return None
 
 
+def _numbers(text: str) -> list[str]:
+    return list(dict.fromkeys(_NUMBER.findall(normalize(text))))
+
+
+def _unbacked_numbers(text: str, quotes: list[str]) -> list[str]:
+    backed = set(_numbers(" ".join(quotes)))
+    return [n for n in _numbers(text) if n not in backed]
+
+
 def check_draft(draft: Draft, corpus: Corpus) -> list[Objection]:
     """Objections for every claim that is not literally backed. Empty list means grounded."""
     objections = []
+    all_quotes = [c.quote for claim in draft.claims for c in claim.citations]
+    for number in _unbacked_numbers(draft.answer, all_quotes):
+        objections.append(Objection(-1, "grounding:unbacked_number", "",
+                                    f"The answer states {number!r}, which no cited quote contains.",
+                                    True))
     for i, claim in enumerate(draft.claims):
+        for number in _unbacked_numbers(claim.text, [c.quote for c in claim.citations]):
+            objections.append(Objection(i, "grounding:unbacked_number", "",
+                                        f"The claim states {number!r}, which its quotes do not.",
+                                        True))
         if not claim.citations:
             objections.append(Objection(i, "grounding:no_citation", "",
                                         "Every claim needs at least one citation.", True))

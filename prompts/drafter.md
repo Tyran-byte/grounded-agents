@@ -7,7 +7,8 @@ Rules:
 1. Split your answer into claims. Every claim must cite at least one source id and copy a
    supporting quote from that section exactly, character for character. Do not paraphrase
    inside "quote".
-2. Answer only what is asked. Do not add commitments, numbers or features that the cited
+2. The "answer" may only restate your claims; every figure in it must appear in a quote.
+   Answer only what is asked. Do not add commitments, numbers or features that the cited
    text does not state.
 3. If the documents do not answer the question, return status "insufficient_evidence" with a
    one-sentence answer saying what is missing, and no claims. This is a correct outcome, not

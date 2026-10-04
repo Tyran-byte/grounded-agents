@@ -1,0 +1,633 @@
+{
+ "items": {
+  "e01": {
+   "drafter": [
+    {
+     "status": "answered",
+     "answer": "Customer data in transit over public networks is encrypted with TLS 1.2 or higher; older protocol versions are refused.",
+     "claims": [
+      {
+       "text": "Customer data in transit over public networks is encrypted with TLS 1.2 or higher; older protocol versions are refused.",
+       "citations": [
+        {
+         "source": "encryption#in-transit",
+         "quote": "Customer data in transit over public networks is encrypted with TLS 1.2 or higher."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "verifier": [
+    {
+     "verdict": "pass",
+     "objections": []
+    }
+   ]
+  },
+  "e02": {
+   "drafter": [
+    {
+     "status": "answered",
+     "answer": "Data encryption keys are rotated every 12 months.",
+     "claims": [
+      {
+       "text": "Data encryption keys are rotated every 12 months.",
+       "citations": [
+        {
+         "source": "encryption#key-management",
+         "quote": "Data encryption keys are rotated every 12 months."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "verifier": [
+    {
+     "verdict": "pass",
+     "objections": []
+    }
+   ]
+  },
+  "e03": {
+   "drafter": [
+    {
+     "status": "answered",
+     "answer": "Yes, multi-factor authentication is required for every Quillmere employee account without exception.",
+     "claims": [
+      {
+       "text": "Yes, multi-factor authentication is required for every Quillmere employee account without exception.",
+       "citations": [
+        {
+         "source": "access-control#sso-mfa",
+         "quote": "Multi-factor authentication is required for every Quillmere employee account without exception."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "verifier": [
+    {
+     "verdict": "pass",
+     "objections": []
+    }
+   ]
+  },
+  "e04": {
+   "drafter": [
+    {
+     "status": "answered",
+     "answer": "Audit logs are retained for 400 days and can be exported by workspace administrators.",
+     "claims": [
+      {
+       "text": "Audit logs are retained for 400 days and can be exported by workspace administrators.",
+       "citations": [
+        {
+         "source": "access-control#audit-logs",
+         "quote": "Audit logs are retained for 400 days and can be exported by workspace administrators."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "verifier": [
+    {
+     "verdict": "pass",
+     "objections": []
+    }
+   ]
+  },
+  "e05": {
+   "drafter": [
+    {
+     "status": "answered",
+     "answer": "Accounts of departing employees are disabled within 24 hours of their last working day.",
+     "claims": [
+      {
+       "text": "Accounts of departing employees are disabled within 24 hours of their last working day.",
+       "citations": [
+        {
+         "source": "access-control#access-reviews",
+         "quote": "Accounts of departing employees are disabled within 24 hours of their last working day."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "verifier": [
+    {
+     "verdict": "pass",
+     "objections": []
+    }
+   ]
+  },
+  "e06": {
+   "drafter": [
+    {
+     "status": "answered",
+     "answer": "A full restore from backup is tested every quarter.",
+     "claims": [
+      {
+       "text": "A full restore from backup is tested every quarter.",
+       "citations": [
+        {
+         "source": "backup-recovery#restore-tests",
+         "quote": "A full restore from backup is tested every quarter"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "verifier": [
+    {
+     "verdict": "pass",
+     "objections": []
+    }
+   ]
+  },
+  "e07": {
+   "drafter": [
+    {
+     "status": "answered",
+     "answer": "Affected customers are notified within 72 hours of a confirmed security incident involving their data.",
+     "claims": [
+      {
+       "text": "Affected customers are notified within 72 hours of a confirmed security incident involving their data.",
+       "citations": [
+        {
+         "source": "incident-response#notification",
+         "quote": "notified within 72 hours of confirmation"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "verifier": [
+    {
+     "verdict": "pass",
+     "objections": []
+    }
+   ]
+  },
+  "e08": {
+   "drafter": [
+    {
+     "status": "answered",
+     "answer": "Customer data is deleted from production systems within 30 days after the subscription ends.",
+     "claims": [
+      {
+       "text": "Customer data is deleted from production systems within 30 days after the subscription ends.",
+       "citations": [
+        {
+         "source": "data-retention#deletion",
+         "quote": "After a subscription ends, customer data is deleted from production systems within 30 days."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "verifier": [
+    {
+     "verdict": "pass",
+     "objections": []
+    }
+   ]
+  },
+  "e09": {
+   "drafter": [
+    {
+     "status": "answered",
+     "answer": "Yes. Customers choose the EU or the US region when the workspace is created; the region cannot be changed afterwards.",
+     "claims": [
+      {
+       "text": "Yes. Customers choose the EU or the US region when the workspace is created; the region cannot be changed afterwards.",
+       "citations": [
+        {
+         "source": "data-retention#residency",
+         "quote": "Customers can choose to host their workspace in the EU region or the US region when the workspace is created."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "verifier": [
+    {
+     "verdict": "pass",
+     "objections": []
+    }
+   ]
+  },
+  "e10": {
+   "drafter": [
+    {
+     "status": "answered",
+     "answer": "Yes, customers are notified 30 days before a new subprocessor that will process customer data is added.",
+     "claims": [
+      {
+       "text": "Yes, customers are notified 30 days before a new subprocessor that will process customer data is added.",
+       "citations": [
+        {
+         "source": "vendor-management#subprocessors",
+         "quote": "notifies customers 30 days before adding a new subprocessor that will process customer data"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "verifier": [
+    {
+     "verdict": "pass",
+     "objections": []
+    }
+   ]
+  },
+  "e11": {
+   "drafter": [
+    {
+     "status": "answered",
+     "answer": "Yes. Every change to production code requires review and approval by an engineer other than its author.",
+     "claims": [
+      {
+       "text": "Yes. Every change to production code requires review and approval by an engineer other than its author.",
+       "citations": [
+        {
+         "source": "secure-development#code-review",
+         "quote": "Every change to production code requires review and approval by an engineer other than its author."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "verifier": [
+    {
+     "verdict": "pass",
+     "objections": []
+    }
+   ]
+  },
+  "e12": {
+   "drafter": [
+    {
+     "status": "answered",
+     "answer": "No. Customer data is never copied into staging or development environments.",
+     "claims": [
+      {
+       "text": "No. Customer data is never copied into staging or development environments.",
+       "citations": [
+        {
+         "source": "secure-development#environments",
+         "quote": "Customer data is never copied into staging or development environments."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "verifier": [
+    {
+     "verdict": "pass",
+     "objections": []
+    }
+   ]
+  },
+  "e13": {
+   "drafter": [
+    {
+     "status": "answered",
+     "answer": "Yes. Workspace administrators can disable the assistant for the whole workspace, and then no workspace data is sent to any model provider.",
+     "claims": [
+      {
+       "text": "Admins can disable the assistant for the whole workspace.",
+       "citations": [
+        {
+         "source": "ai-data-usage#opt-out",
+         "quote": "Workspace administrators can disable the assistant feature for their whole workspace."
+        }
+       ]
+      },
+      {
+       "text": "When disabled, no workspace data goes to a model provider.",
+       "citations": [
+        {
+         "source": "ai-data-usage#opt-out",
+         "quote": "When it is disabled, no workspace data is sent to any model provider."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "verifier": [
+    {
+     "verdict": "pass",
+     "objections": []
+    }
+   ]
+  },
+  "e14": {
+   "drafter": [
+    {
+     "status": "answered",
+     "answer": "An independent firm runs a penetration test every quarter and the full report is shared on request.",
+     "claims": [
+      {
+       "text": "Pen tests run quarterly and full reports are shared.",
+       "citations": [
+        {
+         "source": "secure-development#pentest",
+         "quote": "penetration test every quarter"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "status": "answered",
+     "answer": "An independent firm performs a penetration test of the product once a year. Enterprise customers can request an executive summary of the latest report under NDA.",
+     "claims": [
+      {
+       "text": "A yearly independent penetration test is performed.",
+       "citations": [
+        {
+         "source": "secure-development#pentest",
+         "quote": "An independent firm performs a penetration test of the product once a year."
+        }
+       ]
+      },
+      {
+       "text": "Enterprise customers can get an executive summary under NDA.",
+       "citations": [
+        {
+         "source": "secure-development#pentest",
+         "quote": "Customers on the Enterprise plan can request an executive summary of the latest report under NDA."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "verifier": [
+    null,
+    {
+     "verdict": "pass",
+     "objections": []
+    }
+   ]
+  },
+  "e15": {
+   "drafter": [
+    {
+     "status": "answered",
+     "answer": "Yes, customer-managed keys are available.",
+     "claims": [
+      {
+       "text": "Customer-managed keys are available.",
+       "citations": [
+        {
+         "source": "encryption#customer-managed-keys",
+         "quote": "Customer-managed encryption keys are available on the Enterprise plan only."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "status": "answered",
+     "answer": "Customer-managed encryption keys are available on the Enterprise plan only.",
+     "claims": [
+      {
+       "text": "Customer-managed keys are an Enterprise-only option.",
+       "citations": [
+        {
+         "source": "encryption#customer-managed-keys",
+         "quote": "Customer-managed encryption keys are available on the Enterprise plan only."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "verifier": [
+    {
+     "verdict": "fail",
+     "objections": [
+      {
+       "claim": 0,
+       "rule": "drops-condition",
+       "source_quote": "Customer-managed encryption keys are available on the Enterprise plan only.",
+       "explanation": "The answer omits the plan restriction."
+      }
+     ]
+    },
+    {
+     "verdict": "pass",
+     "objections": []
+    }
+   ]
+  },
+  "e16": {
+   "drafter": [
+    {
+     "status": "answered",
+     "answer": "No data ever leaves Quillmere.",
+     "claims": [
+      {
+       "text": "No data leaves Quillmere.",
+       "citations": [
+        {
+         "source": "ai-data-usage#providers",
+         "quote": "No data ever leaves Quillmere"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "status": "answered",
+     "answer": "Only if the assistant is used: it sends the text of the user's question and the relevant chart metadata to a third-party model provider listed as a subprocessor.",
+     "claims": [
+      {
+       "text": "The assistant sends questions and chart metadata to a listed third-party provider.",
+       "citations": [
+        {
+         "source": "ai-data-usage#providers",
+         "quote": "The optional assistant feature sends the text of a user's question and the relevant chart metadata to a third-party model provider listed as a subprocessor."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "verifier": [
+    null,
+    {
+     "verdict": "pass",
+     "objections": []
+    }
+   ]
+  },
+  "e17": {
+   "drafter": [
+    {
+     "status": "insufficient_evidence",
+     "answer": "The control documents do not cover this.",
+     "claims": []
+    }
+   ]
+  },
+  "e18": {
+   "drafter": [
+    {
+     "status": "insufficient_evidence",
+     "answer": "The control documents do not cover this.",
+     "claims": []
+    }
+   ]
+  },
+  "e19": {
+   "drafter": [
+    {
+     "status": "insufficient_evidence",
+     "answer": "The control documents do not cover this.",
+     "claims": []
+    }
+   ]
+  },
+  "e20": {
+   "drafter": [
+    {
+     "status": "answered",
+     "answer": "Yes, security alerts are monitored 24/7 by on-call engineers.",
+     "claims": [
+      {
+       "text": "An engineer is on call outside business hours.",
+       "citations": [
+        {
+         "source": "incident-response#on-call",
+         "quote": "An engineer is on call outside business hours for production outages."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "status": "answered",
+     "answer": "Yes, security alerts are monitored 24/7 by on-call engineers.",
+     "claims": [
+      {
+       "text": "An engineer is on call outside business hours.",
+       "citations": [
+        {
+         "source": "incident-response#on-call",
+         "quote": "An engineer is on call outside business hours for production outages."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "verifier": [
+    {
+     "verdict": "fail",
+     "objections": [
+      {
+       "claim": -1,
+       "rule": "overreach",
+       "source_quote": "Security alerts raised outside business hours are reviewed on the next business day unless they are classified as critical.",
+       "explanation": "Only critical alerts are handled outside business hours."
+      }
+     ]
+    },
+    {
+     "verdict": "fail",
+     "objections": [
+      {
+       "claim": -1,
+       "rule": "overreach",
+       "source_quote": "Security alerts raised outside business hours are reviewed on the next business day unless they are classified as critical.",
+       "explanation": "Only critical alerts are handled outside business hours."
+      }
+     ]
+    }
+   ]
+  },
+  "e21": {
+   "drafter": [
+    {
+     "status": "answered",
+     "answer": "Yes, the RPO is 6 hours.",
+     "claims": [
+      {
+       "text": "The RPO is 6 hours.",
+       "citations": [
+        {
+         "source": "backup-recovery#objectives",
+         "quote": "The recovery point objective (RPO) is 6 hours"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "status": "answered",
+     "answer": "Yes, the RPO is 6 hours.",
+     "claims": [
+      {
+       "text": "The RPO is 6 hours.",
+       "citations": [
+        {
+         "source": "backup-recovery#objectives",
+         "quote": "The recovery point objective (RPO) is 6 hours"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "verifier": [
+    {
+     "verdict": "fail",
+     "objections": [
+      {
+       "claim": -1,
+       "rule": "drops-condition",
+       "source_quote": "These objectives are internal targets, not contractual commitments.",
+       "explanation": "Presented as a guarantee."
+      }
+     ]
+    },
+    {
+     "verdict": "fail",
+     "objections": [
+      {
+       "claim": -1,
+       "rule": "drops-condition",
+       "source_quote": "These objectives are internal targets, not contractual commitments.",
+       "explanation": "Presented as a guarantee."
+      }
+     ]
+    }
+   ]
+  },
+  "e22": {
+   "drafter": [
+    {
+     "_raw": "Our vendor process is robust and industry-leading."
+    },
+    {
+     "_raw": "Vendors are reviewed. (JSON omitted)"
+    }
+   ]
+  }
+ }
+}

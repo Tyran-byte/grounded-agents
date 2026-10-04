@@ -62,3 +62,25 @@ def test_verify_objections_marks_unverifiable_quotes():
                   Objection(0, "overreach", "", "e")]
     verified = verify_objections(objections, CORPUS)
     assert [o.verified for o in verified] == [True, False, False]
+
+
+def test_numbers_in_the_answer_must_appear_in_a_quote():
+    draft = Draft("answered", "Yes, AES-256, rotated every 12 months, with 24/7 monitoring.", [
+        Claim("AES-256 at rest", [Citation("enc#at-rest", "encrypted with AES-256")])])
+    objections = check_draft(draft, CORPUS)
+    assert [(o.claim, o.rule) for o in objections] == [
+        (-1, "grounding:unbacked_number"), (-1, "grounding:unbacked_number")]
+    assert "'12'" in objections[0].explanation and "'24/7'" in objections[1].explanation
+
+
+def test_numbers_in_a_claim_must_appear_in_its_own_quotes():
+    draft = Draft("answered", "TLS.", [
+        Claim("TLS 1.3 is used", [Citation("enc#transit", "Traffic uses TLS 1.2 or higher")])])
+    assert [(o.claim, o.rule) for o in check_draft(draft, CORPUS)] == [
+        (0, "grounding:unbacked_number")]
+
+
+def test_backed_numbers_pass():
+    draft = Draft("answered", "TLS 1.2 or higher.", [
+        Claim("TLS 1.2+", [Citation("enc#transit", "Traffic uses TLS 1.2 or higher")])])
+    assert check_draft(draft, CORPUS) == []

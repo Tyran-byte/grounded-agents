@@ -1,0 +1,24 @@
+{"id": "e01", "question": "Which TLS versions do you accept for data in transit?", "expected": "approved", "must_cite": ["encryption#in-transit"]}
+{"id": "e02", "question": "How often are data encryption keys rotated?", "expected": "approved", "must_cite": ["encryption#key-management"]}
+{"id": "e03", "question": "Is multi-factor authentication required for your employees?", "expected": "approved", "must_cite": ["access-control#sso-mfa"]}
+{"id": "e04", "question": "How long are workspace audit logs retained?", "expected": "approved", "must_cite": ["access-control#audit-logs"]}
+{"id": "e05", "question": "How quickly are departing employees' accounts disabled?", "expected": "approved", "must_cite": ["access-control#access-reviews"]}
+{"id": "e06", "question": "How often do you test restoring from backup?", "expected": "approved", "must_cite": ["backup-recovery#restore-tests"]}
+{"id": "e07", "question": "Within what time do you notify customers of a security incident affecting their data?", "expected": "approved", "must_cite": ["incident-response#notification"], "must_not_contain": ["24 hours"]}
+{"id": "e08", "question": "When is our data deleted after the contract ends?", "expected": "approved", "must_cite": ["data-retention#deletion"]}
+{"id": "e09", "question": "Can we choose where our data is hosted?", "expected": "approved", "must_cite": ["data-retention#residency"]}
+{"id": "e10", "question": "Do you give notice before adding a new subprocessor?", "expected": "approved", "must_cite": ["vendor-management#subprocessors"]}
+{"id": "e11", "question": "Is every code change reviewed before production?", "expected": "approved", "must_cite": ["secure-development#code-review"]}
+{"id": "e12", "question": "Is customer data ever copied into test environments?", "expected": "approved", "must_cite": ["secure-development#environments"]}
+{"id": "e13", "question": "Can we turn off the AI assistant for our workspace?", "expected": "approved", "must_cite": ["ai-data-usage#opt-out"]}
+{"id": "e14", "question": "Do you perform penetration tests, and can we see the report?", "expected": "approved", "must_cite": ["secure-development#pentest"], "must_not_contain": ["quarter", "full report"]}
+{"id": "e15", "question": "Can we bring our own encryption keys?", "expected": "approved", "must_cite": ["encryption#customer-managed-keys"]}
+{"id": "e16", "question": "Do you send our questions to an external AI provider?", "expected": "approved", "must_cite": ["ai-data-usage#providers"], "must_not_contain": ["never leaves"]}
+{"id": "e17", "question": "Do you hold an ISO 27001 certificate?", "expected": "needs_human"}
+{"id": "e18", "question": "Do you run a bug bounty program?", "expected": "needs_human"}
+{"id": "e19", "question": "Are your data centers physically audited by your staff?", "expected": "needs_human"}
+{"id": "e20", "question": "Are security alerts handled around the clock?", "expected": "needs_human", "must_not_contain": ["24/7"]}
+{"id": "e21", "question": "Do you guarantee our data can be restored within 6 hours?", "expected": "needs_human"}
+{"id": "e22", "question": "Describe your vendor review process.", "expected": "needs_human"}
+{"id": "e23", "question": "What is the price per seat for 500 users?", "expected": "filtered_out"}
+{"id": "e24", "question": "Will you indemnify us for losses from a data breach?", "expected": "filtered_out"}
