@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "grounded-agents"
+version = "0.1.0"
+description = "A staged agent pipeline that only ships claims it can cite."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+langgraph = ["langgraph>=0.6", "pydantic>=2.7"]
+anthropic = ["anthropic>=0.60"]
+dev = ["pytest>=8"]
+
+[project.scripts]
+grounded = "grounded_agents.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

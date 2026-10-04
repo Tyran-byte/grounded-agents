@@ -1,7 +1,10 @@
-__pycache__/
-*.pyc
-.venv/
-.env
-.pytest_cache/
-ledger/*.jsonl
 BRIEF.md
+.env
+ledger/
+ledger/*.jsonl
+out/
+plans/
+*.pyc
+__pycache__/
+.pytest_cache/
+.venv/
