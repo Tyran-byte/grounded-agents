@@ -1,0 +1,22 @@
+# Drafts grounded answers to incoming security questionnaires.
+# Models are not named here on purpose: set GA_DRAFTER_* and GA_VERIFIER_* in the environment
+# (see README), or run offline with --provider fake.
+name = "answer-langgraph"
+description = "Draft grounded answers to security questionnaires (langgraph engine)"
+engine = "langgraph"
+tier = "T1"                  # proposes: writes answers and a review queue, sends nothing
+schedule = "0 7 * * 1-5"     # weekdays 07:00; print crontab lines with: grounded schedule
+timeout_s = 600
+inputs = ["data/quillmere/questionnaires"]
+writes = ["out/answers", "out/review-queue"]
+
+[budget]
+per_call_usd = 0.05
+per_run_usd = 0.50
+per_day_usd = 2.00
+
+[models.drafter]
+provider = "env"
+
+[models.verifier]
+provider = "env"
