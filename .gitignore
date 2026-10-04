@@ -1,4 +1,6 @@
 BRIEF.md
+build/
+*.egg-info/
 .env
 ledger/
 ledger/*.jsonl

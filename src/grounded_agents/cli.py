@@ -74,9 +74,11 @@ def _eval_context(args, budget_spec: dict):
     else:
         models = resolve_models(load_manifest(args.manifest), None)
         script = None
-    budget = Budget(float(budget_spec.get("per_call_usd", 0.05)),
-                    float(budget_spec.get("per_run_usd", 2.0)),
-                    float(budget_spec.get("per_run_usd", 2.0)))
+    per_run = float(budget_spec.get("per_run_usd", 2.0))
+    # An eval run is one-off and not recorded in the worker ledger, so its daily cap defaults
+    # to its run cap; set per_day_usd in evals/set.toml to cap repeated eval runs separately.
+    budget = Budget(float(budget_spec.get("per_call_usd", 0.05)), per_run,
+                    float(budget_spec.get("per_day_usd", per_run)))
     return build_context(root, models, budget, script), models
 
 

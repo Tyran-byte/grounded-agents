@@ -1,6 +1,6 @@
 # grounded-agents — design
 
-Status: approved for implementation (2026-10-04).
+Status: implemented (2026-10-04). Section 6 and 8 reflect the code as built.
 
 ## 1. Goal
 
@@ -156,9 +156,11 @@ provider = "env"
 - **Dry-run by default.** Without `--apply` nothing is written outside the ledger; the run
   prints what it would write.
 - **Tiers are enforced by the runtime**, not by convention: T0 may not write at all; T1 may
-  write only to its declared `writes` paths; T2 additionally may run its declared reversible
-  action; T3 refuses `--apply` unless an approval file for that exact trace id exists. Writes
-  go through a `Writer` that rejects any path outside `writes`.
+  write only to its declared `writes` paths; T2 follows the T1 rules (no bundled worker acts
+  yet); T3 refuses `--apply` unless `--approved-by NAME` is given, and the approver is recorded
+  in the ledger. (An approval file keyed by the trace id was dropped: the trace id does not
+  exist until the run starts.) Writes go through a `Writer` that rejects any path outside
+  `writes`.
 - **Budgets**: before each call the runtime checks `spent_run + per_call_usd <= per_run_usd`
   and `spent_today + per_call_usd <= per_day_usd` (today's spend is summed from the ledger);
   if not, `BudgetExhausted` stops the run cleanly. After the call, a cost above `per_call_usd`
@@ -186,7 +188,8 @@ provider = "env"
   leaves a visible diff — the set cannot be quietly edited until it passes.
 - **Seal** (`grounded evals seal --engine X --provider Y`): refuses if the set differs from
   `SET.lock`; runs the gate; writes `evals/SEAL.json` with `set_hash`, `logic_hash` (hash of
-  `core/`, the engine, `prompts/` and the manifest minus secrets), engine, provider, result
+  `core/`, the engine and `prompts/`), the models fingerprint (provider and model id per role),
+  engine, provider kind, result
   (`green|red`), metrics and date. A red seal is written as red — it is not retried away.
 - **Gate (deterministic)**: each case declares `expected` (`approved | needs_human |
   filtered_out`), optional `must_cite` sources and `must_not_contain` strings. Hard rules:
@@ -203,7 +206,7 @@ provider = "env"
 - Unit tests per core module (grounding edge cases, schema validation, budget arithmetic,
   transitions, manifest validation, tier enforcement, ledger, alert state machine, seal).
 - Conformance tests: the same scripted scenarios through both engines, same final states,
-  attempts, costs and ledger counts. LangGraph tests are skipped when the extra is missing.
+  attempts, state history and stop reason. LangGraph tests are skipped when the extra is missing.
 - No network in tests: the HTTP providers are tested against an in-process stub server.
 
 ## 10. Packaging and CI
