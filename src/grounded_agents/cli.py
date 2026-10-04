@@ -88,6 +88,14 @@ def cmd_evals(args) -> int:
             lock = seal.freeze(evals_dir, new_version=args.new_version)
             print(f"eval set v{lock['version']} frozen: {lock['set_hash'][:16]}")
             return 0
+        if args.evals_cmd == "verify":
+            models = fake_models() if args.provider == "fake" else resolve_models(
+                load_manifest(args.manifest), None)
+            entry = seal.verify_seal(root, args.engine, models_fingerprint(models),
+                                     provider_kind(models))
+            print(f"seal ok: {args.engine}/{entry['provider_kind']} {entry['result']} "
+                  f"(set v{entry['set_version']}, sealed {entry['sealed_at']})")
+            return 0
         seal.check_frozen(evals_dir)
         header, cases = gate.load_set(evals_dir)
         ctx, models = _eval_context(args, header.get("budget", {}))
@@ -144,7 +152,7 @@ def build_parser() -> argparse.ArgumentParser:
     ev_sub = ev.add_subparsers(dest="evals_cmd", required=True)
     fr = ev_sub.add_parser("freeze")
     fr.add_argument("--new-version", action="store_true")
-    for name in ("seal", "check", "sample"):
+    for name in ("seal", "check", "sample", "verify"):
         p = ev_sub.add_parser(name)
         p.add_argument("--engine", choices=["plain", "langgraph"], default="plain")
         p.add_argument("--provider", choices=["fake", "real"], default="fake")

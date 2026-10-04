@@ -113,3 +113,13 @@ def test_sample_is_deterministic():
                                  "human": {"drafter": [GOOD, GOOD], "verifier": [FAIL, FAIL]}}})
     report = gate.run_gate(CASES, {"accuracy_min": 0}, "plain", ctx)
     assert [i.id for i in gate.sample(report, 5, seed=1)] == ["ok"]
+
+
+def test_cli_verify_reports_stale_seal(evals_root, capsys):
+    from grounded_agents.cli import main
+    seal.freeze(evals_root / "evals")
+    seal.write_seal(evals_root, "plain", FP, "fake", True, {})
+    assert main(["--root", str(evals_root), "evals", "verify", "--engine", "plain"]) == 0
+    (evals_root / "prompts" / "drafter.md").write_text("changed")
+    assert main(["--root", str(evals_root), "evals", "verify", "--engine", "plain"]) == 2
+    assert "code or prompts changed" in capsys.readouterr().err
