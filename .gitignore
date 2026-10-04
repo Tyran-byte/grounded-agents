@@ -1,5 +1,6 @@
 BRIEF.md
 build/
+CLAUDE.local.md
 *.egg-info/
 .env
 ledger/
