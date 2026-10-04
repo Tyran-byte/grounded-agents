@@ -7,12 +7,13 @@ draft that has not passed grounding in the same attempt.
 
 from __future__ import annotations
 
+import time
 from dataclasses import dataclass, field
 from typing import Callable
 
 from . import schemas
 from .corpus import Corpus
-from .errors import InvalidOutput
+from .errors import InvalidOutput, RunTimeout
 from .filters import filter_question
 from .grounding import check_draft, verify_objections
 from .llm import LLM
@@ -31,6 +32,11 @@ class Context:
     parse_draft: Callable[[str], Draft] = schemas.parse_draft
     parse_verdict: Callable[[str], Verdict] = schemas.parse_verdict
     grounded: set[tuple[str, int]] = field(default_factory=set)  # (item id, attempt) that passed
+    deadline: float | None = None  # time.monotonic() value after which no new call starts
+
+    def check_deadline(self) -> None:
+        if self.deadline is not None and time.monotonic() > self.deadline:
+            raise RunTimeout("run exceeded its timeout")
 
 
 def fail_attempt(item: Item, failed: State, objections: list[Objection], ctx: Context) -> None:
@@ -49,6 +55,7 @@ def step_filter(item: Item, ctx: Context) -> None:
 
 
 def step_draft(item: Item, ctx: Context) -> Draft | None:
+    ctx.check_deadline()
     item.attempts += 1
     previous = item.drafts[-1] if item.drafts else None
     objections = item.objections[-1] if item.objections else None
@@ -81,6 +88,7 @@ def step_ground(item: Item, ctx: Context) -> bool:
 def step_verify(item: Item, ctx: Context) -> bool:
     if item.state is not State.DRAFTED or (item.id, item.attempts) not in ctx.grounded:
         raise RuntimeError(f"{item.id}: verify called without a grounded draft")
+    ctx.check_deadline()
     draft = item.drafts[-1]
     system, user = build_verifier(ctx.prompts, item.question, draft, ctx.corpus)
     completion = ctx.llm.call("verifier", system, user, item_id=item.id, attempt=item.attempts)

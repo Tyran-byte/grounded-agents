@@ -6,12 +6,13 @@ import copy
 from dataclasses import dataclass
 from typing import Callable
 
-from ..core.errors import BudgetExhausted, CallBudgetExceeded, GroundedError, ProviderUnavailable
+from ..core.errors import (BudgetExhausted, CallBudgetExceeded, GroundedError, ProviderUnavailable,
+                           RunTimeout)
 from ..core.states import Item
 from ..core.steps import Context
 
 ENGINES = ("plain", "langgraph")
-STOPPING = (BudgetExhausted, CallBudgetExceeded, ProviderUnavailable)
+STOPPING = (BudgetExhausted, CallBudgetExceeded, ProviderUnavailable, RunTimeout)
 
 
 @dataclass

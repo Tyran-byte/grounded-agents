@@ -42,6 +42,10 @@ class ProviderUnavailable(GroundedError):
     """The model provider could not answer (network, auth, missing package, no script)."""
 
 
+class RunTimeout(GroundedError):
+    """The run exceeded its manifest's timeout_s. Checked between model calls."""
+
+
 class ManifestError(GroundedError):
     """A worker manifest is missing fields or has invalid values."""
 
