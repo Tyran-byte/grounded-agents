@@ -4,7 +4,8 @@ Script shape::
 
     {"items": {"<item id>": {"drafter": [<attempt 1>, <attempt 2>], "verifier": [...]}}}
 
-Each response is a JSON object (sent back serialized), ``{"_raw": "text"}`` for malformed
+Responses are indexed by attempt (a ``null`` placeholder marks an attempt that should never
+reach that role). Each response is a JSON object (sent back serialized), ``{"_raw": "text"}`` for malformed
 output, or ``{"_error": "..."}`` to simulate an outage. ``"_tokens": [in, out]`` overrides the
 synthetic token counts so cost and budget paths can be exercised.
 """
@@ -32,6 +33,8 @@ class FakeProvider:
         try:
             response = self.script["items"][req.item_id][req.role][req.attempt - 1]
         except (KeyError, IndexError, TypeError):
+            response = None
+        if response is None:
             raise ProviderUnavailable(
                 f"fake: no scripted {req.role} response for {req.item_id} attempt {req.attempt}"
             ) from None
