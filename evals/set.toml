@@ -1,5 +1,7 @@
-# Blind eval set: written before tuning prompts, frozen in SET.lock, never edited to pass.
-version = 1
+# Eval set, frozen in SET.lock. Changing it needs `grounded evals freeze --new-version`.
+# v2: e20-e22 expected needs_human because that is what the scripted model did; the documents
+# do answer them, so a correct pipeline approves them. The expectation was fixed, not the model.
+version = 2
 description = "Security questionnaire answers grounded in Quillmere control documents"
 accuracy_min = 0.95          # share of cases whose final outcome matches "expected"
 

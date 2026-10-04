@@ -1,7 +1,7 @@
 {
   "seals": {
     "langgraph/fake": {
-      "logic_hash": "e2a26d8cfdf4ebaf60fe389e7b4febf2104c92d9e8093ac8f387bc6e6601d1a8",
+      "logic_hash": "254b7d02d85c702eaff31ef2a3adc81d8c26582e3210fc8a4625fbe5c1337eac",
       "metrics": {
         "accuracy": 1.0,
         "correct": 24,
@@ -12,12 +12,12 @@
       "models": "drafter=fake:fake,verifier=fake:fake",
       "provider_kind": "fake",
       "result": "green",
-      "sealed_at": "2026-10-04T04:10:15Z",
-      "set_hash": "a0bb9cba42ffac4bba747a5e6e044d005cc80d286352e199b22f01cc9b5d900c",
-      "set_version": 1
+      "sealed_at": "2026-10-04T05:01:50Z",
+      "set_hash": "f978475029f044c50a0114e2c7b04a61352d9af577df18a897f11f9db5027129",
+      "set_version": 2
     },
     "plain/fake": {
-      "logic_hash": "fe02d5bbc46fe95ffcf5dbe2dceade96b4a277e235fb8aa6f452bd190baddbec",
+      "logic_hash": "79742828d3839081f5aab5a258677c93f72af17c79cf7178f537966aad7e1a48",
       "metrics": {
         "accuracy": 1.0,
         "correct": 24,
@@ -28,9 +28,9 @@
       "models": "drafter=fake:fake,verifier=fake:fake",
       "provider_kind": "fake",
       "result": "green",
-      "sealed_at": "2026-10-04T04:10:14Z",
-      "set_hash": "a0bb9cba42ffac4bba747a5e6e044d005cc80d286352e199b22f01cc9b5d900c",
-      "set_version": 1
+      "sealed_at": "2026-10-04T05:01:49Z",
+      "set_hash": "f978475029f044c50a0114e2c7b04a61352d9af577df18a897f11f9db5027129",
+      "set_version": 2
     }
   }
 }

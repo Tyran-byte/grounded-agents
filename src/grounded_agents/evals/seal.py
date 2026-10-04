@@ -5,8 +5,9 @@ Two hashes, two jobs:
 * ``set_hash`` — the cases. Frozen in ``SET.lock`` *before* prompts or logic change. Editing the
   set afterwards needs ``freeze --new-version``, which leaves a visible version bump: the set
   cannot be quietly tuned until the pipeline passes.
-* ``logic_hash`` — core code, the engine and the prompts. A seal is valid only while this hash
-  matches; any change to what decides an answer invalidates it until the evals run again.
+* ``logic_hash`` — core code, the engine, the prompts and the control documents. A seal is
+  valid only while this hash matches; any change to what decides an answer — including the
+  facts it is grounded in — invalidates it until the evals run again.
 
 A red result is sealed as red. Applying (writing outputs) requires a green, current seal.
 """
@@ -43,6 +44,7 @@ def logic_hash(root: Path, engine: str) -> str:
     h = hashlib.sha256()
     h.update(_digest(files, PACKAGE).encode())
     h.update(_digest(list((root / "prompts").glob("*.md")), root).encode())
+    h.update(_digest(list((root / "data").rglob("controls/*.md")), root).encode())
     return h.hexdigest()
 
 
@@ -104,7 +106,7 @@ def verify_seal(root: Path, engine: str, fingerprint: str, kind: str) -> dict:
     if entry["set_hash"] != lock["set_hash"]:
         problems.append("sealed against a different eval set")
     if entry["logic_hash"] != logic_hash(root, engine):
-        problems.append("code or prompts changed since the seal")
+        problems.append("code, prompts or control documents changed since the seal")
     if entry["models"] != fingerprint:
         problems.append(f"sealed with models {entry['models']}, running with {fingerprint}")
     if entry["result"] != "green":

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# End-to-end run with no API key and no network: the fake provider replays recorded model
+# End-to-end run with no API key and no network: the fake provider replays scripted model
 # responses, so every control (filter, grounding, verifier, retry, budget, seal, ledger) runs
 # for real while the "model" is deterministic.
 set -euo pipefail

@@ -19,7 +19,7 @@ questionnaires without promising anything its control documents do not say.
 
 ```
 $ grounded run workers/answer-plain.toml --provider fake --script examples/fake-script.json
-answer-plain [plain, T1, dry] trace=answer-plain-20261004T041024-bcf9
+answer-plain [plain, T1, dry] trace=answer-plain-20261004T050157-3624
   q01      approved      attempts=1
   q02      approved      attempts=1
   q03      approved      attempts=2
@@ -28,9 +28,9 @@ answer-plain [plain, T1, dry] trace=answer-plain-20261004T041024-bcf9
   q06      filtered_out  attempts=0  (pricing)
   q07      approved      attempts=2
   q08      approved      attempts=1
-  would write 5 row(s) to out/answers/answer-plain-20261004T041024-bcf9.jsonl
-  would write 2 row(s) to out/review-queue/answer-plain-20261004T041024-bcf9.jsonl
-  calls=18 cost_usd=0.030596 exit=0
+  would write 5 row(s) to out/answers/answer-plain-20261004T050157-3624.jsonl
+  would write 2 row(s) to out/review-queue/answer-plain-20261004T050157-3624.jsonl
+  calls=18 cost_usd=0.043528 exit=0
 ```
 
 ## Why these controls
@@ -45,13 +45,13 @@ wrong:
 | The model answers what no one should answer automatically (pricing, liability) | Deterministic intake filter, before any spend | `core/filters.py` |
 | The draft invents or paraphrases a source | Every claim quotes its source **verbatim**; the quote must exist in that exact section. Only whitespace and typographic quotes/dashes are normalised — no case folding, no fuzzy match | `core/grounding.py` |
 | The prose says more than the cited claims ("24/7", "99.9%") | Every figure in the answer or a claim must appear in a cited quote | `core/grounding.py` |
-| The quote is real but the claim stretches it (drops a plan tier, turns a target into a guarantee) | Adversarial verifier on a stronger model reads the full cited sections | `prompts/verifier.md`, `core/steps.py` |
+| The quote is real but the claim stretches it (drops a plan tier, turns a target into a guarantee, omits a section that qualifies it) | Adversarial verifier on a stronger model reads the cited sections and every other section | `prompts/verifier.md`, `core/steps.py` |
 | The verifier itself hallucinates an objection | Its objections are grounding-checked too; an unverifiable one **still blocks** — doubt goes to a human, never to shipping | `core/grounding.py` |
 | Endless retry loops that burn money | Exactly one retry, fed with the objections; then `needs_human` with both drafts and every objection | `core/steps.py` |
 | "We don't know" treated as a failure | `insufficient_evidence` is a valid outcome and goes straight to a human, without a retry | `core/steps.py` |
 | A runaway run | Caps per call, per run and per day, checked **before** each call; today's spend comes from the ledger | `core/budget.py` |
 | A worker doing more than it should | Autonomy tiers enforced by the runtime; dry-run by default; writes only to declared paths | `runtime/` |
-| A prompt tweak that quietly breaks things | A blind eval set, frozen before tuning, and a seal bound to the hash of the code and prompts; `--apply` refuses to run without a green, current seal | `evals/` |
+| A prompt tweak (or a policy edit) that quietly breaks things | A frozen eval set and a seal bound to the hash of the code, prompts and control documents; `--apply` refuses to run without a green, current seal | `evals/` |
 | Nobody notices a broken nightly job, or everyone gets paged hourly | Alerts only on a change of state (ok → failing → recovered) | `runtime/alerts.py` |
 
 ## Flow
@@ -62,6 +62,7 @@ flowchart LR
     F -- pricing / legal / duplicate --> FO[filtered_out]
     F --> D[draft<br/>drafter model]
     D -- insufficient_evidence --> H[needs_human]
+    D -- invalid JSON --> R
     D --> G{literal<br/>grounding}
     G -- fails --> R{attempts left?}
     G -- passes --> V{adversarial<br/>verifier}
@@ -83,7 +84,8 @@ pytest                                  # no network, no key
 examples/run_offline.sh                 # both engines, evals, apply, ledger
 ```
 
-The fake provider replays recorded model responses from `examples/fake-script.json`, so every
+The fake provider replays scripted model responses — hand-written, not captured from a real
+model — from `examples/fake-script.json`, so every
 control — filter, grounding, verifier, retry, budget, seal, ledger — runs for real while the
 "model" is deterministic. The example questionnaire covers all four outcomes: shipped on the
 first try (q01), fixed on the single retry after a grounding failure (q03) or a verifier
@@ -183,28 +185,31 @@ per_day_usd = 2.00
 ## Sealed evals
 
 ```bash
-grounded evals freeze                 # hash the blind set into evals/SET.lock (once)
+grounded evals freeze                 # hash the case set into evals/SET.lock (once)
 grounded evals seal --engine plain    # run the gate, record green/red against the logic hash
 grounded evals check --engine plain   # run the gate without sealing
 grounded evals sample 5               # five shipped answers with their quotes, for a human read
 grounded evals verify --engine plain  # is the committed seal still valid for this code? (CI)
 ```
 
-- The set (`evals/cases/`) is written and frozen **before** prompts or logic are tuned. Changing
-  it later needs `freeze --new-version`, which bumps the version visibly: the set cannot be
-  quietly edited until the pipeline passes.
-- The seal binds a result to the hash of `core/`, the engine and `prompts/`, and to the models
-  used. Any change to what decides an answer invalidates it. A red result is sealed as red.
+- The set (`evals/cases/`) is meant to be written and frozen **before** prompts or logic are
+  tuned. Changing it later needs `freeze --new-version`, which bumps the version visibly: the
+  set cannot be quietly edited until the pipeline passes. It is at v2: three cases expected
+  `needs_human` only because that is what the scripted model did, although the documents do
+  answer them. The expectation was fixed, the version records it, and the reason is in
+  `evals/set.toml`.
+- The seal binds a result to the hash of `core/`, the engine, `prompts/` and the control
+  documents, and to the models used. Any change to what decides an answer invalidates it. A red result is sealed as red.
 - Hard rules: zero ungrounded claims shipped (re-checked on what actually shipped), zero
   forbidden strings in shipped answers, outcome accuracy at or above the set's threshold.
 - The qualitative sample is not optional decoration: reading it is how the figure check above
-  was found. A recorded answer stated more than its cited claims; the gate was green; the sample
+  was found. A scripted answer stated more than its cited claims; the gate was green; the sample
   showed it.
 
 What the offline seal proves and what it does not: with the fake provider, the evals test the
-**mechanics** — that every route, retry and control behaves as specified on recorded model
+**mechanics** — that every route, retry and control behaves as specified on scripted model
 behaviour. They say nothing about how well a real model drafts. Sealing with `--provider real`
-runs the same blind set against prompts plus models; that seal is separate and only authorises
+runs the same frozen set against prompts plus models; that seal is separate and only authorises
 runs with those same models.
 
 ## Layout
@@ -218,7 +223,7 @@ src/grounded_agents/
   evals/       seal (freeze, hash, verify) and gate (metrics, sample)
   cli.py       the `grounded` command
 data/quillmere/  invented control documents and an example questionnaire
-evals/           blind case set, frozen hash, seals, recorded responses for offline runs
+evals/           case set, frozen hash, seals, scripted responses for offline runs
 prompts/         drafter and verifier system prompts
 workers/         one manifest per engine
 ```

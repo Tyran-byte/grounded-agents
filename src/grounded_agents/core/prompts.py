@@ -36,9 +36,18 @@ def build_drafter(prompts: Prompts, question: str, corpus: Corpus, previous: Dra
 
 
 def build_verifier(prompts: Prompts, question: str, draft: Draft, corpus: Corpus) -> tuple[str, str]:
+    # The verifier sees every section, not only the cited ones: the commonest overreach is a
+    # draft that quotes one section accurately and omits the one that qualifies it ("these are
+    # internal targets, not commitments"). Cited sections come first so they are easy to find.
     cited = sorted({c.source for claim in draft.claims for c in claim.citations})
-    sections = [s for s in (corpus.get(src) for src in cited) if s is not None]
-    rendered = "\n\n".join(f"[{s.source}] {s.title}\n{s.text}" for s in sections) or "(none)"
+    first = [s for s in (corpus.get(src) for src in cited) if s is not None]
+    rest = [corpus.get(src) for src in corpus.sources() if src not in cited]
+
+    def render(sections) -> str:
+        return "\n\n".join(f"[{s.source}] {s.title}\n{s.text}" for s in sections) or "(none)"
+
     user = (f"Question:\n{question}\n\nDraft:\n{json.dumps(to_jsonable(draft), indent=1)}\n\n"
-            f"Cited sections:\n\n{rendered}")
+            f"Cited sections:\n\n{render(first)}\n\n"
+            f"All other control sections (check that none of them qualifies the answer):\n\n"
+            f"{render(rest)}")
     return prompts.verifier, user

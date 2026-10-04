@@ -1,4 +1,4 @@
-"""Deterministic eval gate over a blind case set, plus a qualitative sample for a human read."""
+"""Deterministic eval gate over a frozen case set, plus a qualitative sample for a human read."""
 
 from __future__ import annotations
 

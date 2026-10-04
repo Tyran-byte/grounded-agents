@@ -53,7 +53,7 @@ def test_prompt_change_invalidates_seal(evals_root):
     seal.freeze(evals_root / "evals")
     seal.write_seal(evals_root, "plain", FP, "fake", True, {})
     (evals_root / "prompts" / "verifier.md").write_text("be lenient")
-    with pytest.raises(SealError, match="code or prompts changed"):
+    with pytest.raises(SealError, match="code, prompts or control documents changed"):
         seal.verify_seal(evals_root, "plain", FP, "fake")
 
 
@@ -122,4 +122,15 @@ def test_cli_verify_reports_stale_seal(evals_root, capsys):
     assert main(["--root", str(evals_root), "evals", "verify", "--engine", "plain"]) == 0
     (evals_root / "prompts" / "drafter.md").write_text("changed")
     assert main(["--root", str(evals_root), "evals", "verify", "--engine", "plain"]) == 2
-    assert "code or prompts changed" in capsys.readouterr().err
+    assert "code, prompts or control documents changed" in capsys.readouterr().err
+
+
+def test_control_document_change_invalidates_seal(evals_root):
+    docs = evals_root / "data" / "quillmere" / "controls"
+    docs.mkdir(parents=True)
+    (docs / "enc.md").write_text("# Enc\n## a — A\nAll data is encrypted.\n")
+    seal.freeze(evals_root / "evals")
+    seal.write_seal(evals_root, "plain", FP, "fake", True, {})
+    (docs / "enc.md").write_text("# Enc\n## a — A\nSome data is encrypted.\n")
+    with pytest.raises(SealError, match="code, prompts or control documents changed"):
+        seal.verify_seal(evals_root, "plain", FP, "fake")

@@ -522,14 +522,14 @@
     },
     {
      "status": "answered",
-     "answer": "Yes, security alerts are monitored 24/7 by on-call engineers.",
+     "answer": "Not all of them. Security alerts raised outside business hours are reviewed on the next business day unless they are classified as critical.",
      "claims": [
       {
-       "text": "An engineer is on call outside business hours.",
+       "text": "Only critical security alerts are handled outside business hours.",
        "citations": [
         {
          "source": "incident-response#on-call",
-         "quote": "An engineer is on call outside business hours for production outages."
+         "quote": "Security alerts raised outside business hours are reviewed on the next business day unless they are classified as critical."
         }
        ]
       }
@@ -549,15 +549,8 @@
      ]
     },
     {
-     "verdict": "fail",
-     "objections": [
-      {
-       "claim": -1,
-       "rule": "overreach",
-       "source_quote": "Security alerts raised outside business hours are reviewed on the next business day unless they are classified as critical.",
-       "explanation": "Only critical alerts are handled outside business hours."
-      }
-     ]
+     "verdict": "pass",
+     "objections": []
     }
    ]
   },
@@ -580,14 +573,23 @@
     },
     {
      "status": "answered",
-     "answer": "Yes, the RPO is 6 hours.",
+     "answer": "No. The recovery time objective for the analytics service is 12 hours, and recovery objectives are internal targets, not contractual commitments.",
      "claims": [
       {
-       "text": "The RPO is 6 hours.",
+       "text": "The RTO for the analytics service is 12 hours.",
        "citations": [
         {
          "source": "backup-recovery#objectives",
-         "quote": "The recovery point objective (RPO) is 6 hours"
+         "quote": "the recovery time objective (RTO) is 12 hours for the analytics service"
+        }
+       ]
+      },
+      {
+       "text": "Recovery objectives are not contractual commitments.",
+       "citations": [
+        {
+         "source": "backup-recovery#objectives",
+         "quote": "These objectives are internal targets, not contractual commitments."
         }
        ]
       }
@@ -607,15 +609,8 @@
      ]
     },
     {
-     "verdict": "fail",
-     "objections": [
-      {
-       "claim": -1,
-       "rule": "drops-condition",
-       "source_quote": "These objectives are internal targets, not contractual commitments.",
-       "explanation": "Presented as a guarantee."
-      }
-     ]
+     "verdict": "pass",
+     "objections": []
     }
    ]
   },
@@ -625,7 +620,35 @@
      "_raw": "Our vendor process is robust and industry-leading."
     },
     {
-     "_raw": "Vendors are reviewed. (JSON omitted)"
+     "status": "answered",
+     "answer": "Every vendor that will process customer data goes through a security review before contracting, and those vendors are re-reviewed every year.",
+     "claims": [
+      {
+       "text": "Vendors that will process customer data are reviewed before contracting.",
+       "citations": [
+        {
+         "source": "vendor-management#vendor-reviews",
+         "quote": "Every vendor that will process customer data goes through a security review before contracting."
+        }
+       ]
+      },
+      {
+       "text": "Those vendors are re-reviewed yearly.",
+       "citations": [
+        {
+         "source": "vendor-management#vendor-reviews",
+         "quote": "Vendors that process customer data are re-reviewed every year."
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "verifier": [
+    null,
+    {
+     "verdict": "pass",
+     "objections": []
     }
    ]
   }

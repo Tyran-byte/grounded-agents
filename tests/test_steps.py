@@ -82,3 +82,13 @@ def test_verify_refuses_ungrounded_draft():
     step_draft(item, ctx)
     with pytest.raises(RuntimeError, match="without a grounded draft"):
         step_verify(item, ctx)
+
+
+def test_verifier_sees_uncited_sections_too():
+    ctx, fake = make_ctx({"items": {"q": {"drafter": [GOOD], "verifier": [PASS]}}})
+    run_once(ctx, Item("q", Q))
+    verifier_prompt = fake.requests[1].user
+    cited_at = verifier_prompt.index("[encryption#at-rest]")
+    other_at = verifier_prompt.index("[backup-recovery#objectives]")  # never cited by GOOD
+    assert cited_at < other_at
+    assert "These objectives are internal targets" in verifier_prompt

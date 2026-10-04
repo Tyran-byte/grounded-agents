@@ -1,6 +1,6 @@
 # grounded-agents — design
 
-Status: implemented (2026-10-04). Section 6 and 8 reflect the code as built.
+Status: implemented (2026-10-04); this document describes the code as built.
 
 ## 1. Goal
 
@@ -25,11 +25,11 @@ and compliance questionnaires ("Do you encrypt customer data at rest?", "Is cust
 to train AI models?") before they buy. A wrong answer becomes a contractual commitment, so the
 pipeline may only state what Quillmere's internal control documents say, quoting them verbatim.
 
-- `data/quillmere/controls/*.md` — about eight control documents (encryption, access control,
+- `data/quillmere/controls/*.md` — eight control documents (encryption, access control,
   backup and recovery, incident response, data retention, vendor management, secure
   development, AI and data usage). Sections are addressed as `doc#section-id`.
 - `data/quillmere/questionnaires/*.jsonl` — example questionnaires used by `examples/`.
-- `evals/cases/*.jsonl` — the blind eval set, disjoint from the examples.
+- `evals/cases/*.jsonl` — the eval set, disjoint from the examples.
 
 Everything — the company, the documents and the questions — is invented.
 
@@ -91,10 +91,12 @@ queued
   "we don't know" is never treated as a failure to retry.
 - **Grounding check**: every claim needs at least one citation; every quote must appear
   verbatim in the cited section. Normalisation is limited to whitespace runs and typographic
-  quotes/dashes. No paraphrase, no fuzzy match. Runs before the verifier because it is free
-  and exact.
-- **Verifier** input: the question, the draft, and the full text of every cited section (so it
-  can catch a draft that stretches what a source says). Output: `{"verdict": "pass" | "fail",
+  quotes/dashes. No paraphrase, no fuzzy match. Quotes shorter than 12 characters are
+  rejected. Every figure (digit sequence) in the answer or a claim must appear in a cited
+  quote. Runs before the verifier because it is free and exact.
+- **Verifier** input: the question, the draft, the full text of every cited section, and every
+  other section of the corpus (so it can catch a draft that stretches a source, or omits the
+  section that qualifies it). Cited sections come first. Output: `{"verdict": "pass" | "fail",
   "objections": [{"claim": int, "rule": str, "source_quote": str, "explanation": str}]}`.
   Each `source_quote` is grounding-checked too; an objection whose quote does not check out is
   marked `unverified` but **still blocks** (fail-closed: doubt goes to a human, never to ship).
@@ -113,7 +115,7 @@ queued
 class Provider(Protocol):
     def complete(self, req: CompletionRequest) -> Completion: ...
 # CompletionRequest: role ("drafter" | "verifier"), model, system, user, max_output_tokens
-# Completion: text, input_tokens, output_tokens, cost_usd
+# Completion: text, input_tokens, output_tokens (cost is computed from the configured prices)
 ```
 
 - `fake` — deterministic, scripted per `(role, item_id, attempt)` from a JSON file; reports
@@ -183,12 +185,12 @@ provider = "env"
 
 ## 8. Sealed evals
 
-- **Freeze** (`grounded evals freeze`): hashes `evals/cases/*.jsonl` into `evals/SET.lock`
+- **Freeze** (`grounded evals freeze`): hashes `evals/set.toml` and `evals/cases/*.jsonl` into `evals/SET.lock`
   once. Changing the set later requires `freeze --new-version`, which bumps the version and
   leaves a visible diff — the set cannot be quietly edited until it passes.
 - **Seal** (`grounded evals seal --engine X --provider Y`): refuses if the set differs from
   `SET.lock`; runs the gate; writes `evals/SEAL.json` with `set_hash`, `logic_hash` (hash of
-  `core/`, the engine and `prompts/`), the models fingerprint (provider and model id per role),
+  `core/`, the engine, `prompts/` and the control documents), the models fingerprint (provider and model id per role),
   engine, provider kind, result
   (`green|red`), metrics and date. A red seal is written as red — it is not retried away.
 - **Gate (deterministic)**: each case declares `expected` (`approved | needs_human |

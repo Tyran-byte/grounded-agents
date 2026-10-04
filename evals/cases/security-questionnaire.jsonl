@@ -17,8 +17,8 @@
 {"id": "e17", "question": "Do you hold an ISO 27001 certificate?", "expected": "needs_human"}
 {"id": "e18", "question": "Do you run a bug bounty program?", "expected": "needs_human"}
 {"id": "e19", "question": "Are your data centers physically audited by your staff?", "expected": "needs_human"}
-{"id": "e20", "question": "Are security alerts handled around the clock?", "expected": "needs_human", "must_not_contain": ["24/7"]}
-{"id": "e21", "question": "Do you guarantee our data can be restored within 6 hours?", "expected": "needs_human"}
-{"id": "e22", "question": "Describe your vendor review process.", "expected": "needs_human"}
+{"id": "e20", "question": "Are security alerts handled around the clock?", "expected": "approved", "must_cite": ["incident-response#on-call"], "must_not_contain": ["24/7"]}
+{"id": "e21", "question": "Do you guarantee our data can be restored within 6 hours?", "expected": "approved", "must_cite": ["backup-recovery#objectives"], "must_not_contain": ["we guarantee", "yes"]}
+{"id": "e22", "question": "Describe your vendor review process.", "expected": "approved", "must_cite": ["vendor-management#vendor-reviews"]}
 {"id": "e23", "question": "What is the price per seat for 500 users?", "expected": "filtered_out"}
 {"id": "e24", "question": "Will you indemnify us for losses from a data breach?", "expected": "filtered_out"}
